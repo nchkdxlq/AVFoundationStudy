@@ -16,6 +16,7 @@
 		08580C9720ABB35E0024A294 /* AVFoundationStudyUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580C9620ABB35E0024A294 /* AVFoundationStudyUITests.m */; };
 		08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA520AC74B60024A294 /* AVNavigationController.m */; };
 		08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA820AC76630024A294 /* AVCameraViewController.m */; };
+		08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CAB20AC79340024A294 /* AVCameraPreviewView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,8 @@
 		08580CA520AC74B60024A294 /* AVNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVNavigationController.m; sourceTree = "<group>"; };
 		08580CA720AC76630024A294 /* AVCameraViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVCameraViewController.h; sourceTree = "<group>"; };
 		08580CA820AC76630024A294 /* AVCameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraViewController.m; sourceTree = "<group>"; };
+		08580CAA20AC79340024A294 /* AVCameraPreviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVCameraPreviewView.h; sourceTree = "<group>"; };
+		08580CAB20AC79340024A294 /* AVCameraPreviewView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraPreviewView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,8 @@
 				08580CA520AC74B60024A294 /* AVNavigationController.m */,
 				08580CA720AC76630024A294 /* AVCameraViewController.h */,
 				08580CA820AC76630024A294 /* AVCameraViewController.m */,
+				08580CAA20AC79340024A294 /* AVCameraPreviewView.h */,
+				08580CAB20AC79340024A294 /* AVCameraPreviewView.m */,
 			);
 			path = AVFoundationStudy;
 			sourceTree = "<group>";
@@ -271,6 +276,7 @@
 				08580C7720ABB35B0024A294 /* ViewController.m in Sources */,
 				08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */,
 				08580C8220ABB35E0024A294 /* main.m in Sources */,
+				08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */,
 				08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */,
 				08580C7420ABB35B0024A294 /* AppDelegate.m in Sources */,
 			);
@@ -433,6 +439,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 733RR644TP;
 				INFOPLIST_FILE = AVFoundationStudy/Info.plist;
@@ -443,6 +450,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.nchkdxlq.AVFoundationStudy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -451,6 +459,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 733RR644TP;
 				INFOPLIST_FILE = AVFoundationStudy/Info.plist;
@@ -461,6 +470,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.nchkdxlq.AVFoundationStudy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
