@@ -26,6 +26,8 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
 
 @property (nonatomic, strong) AVCaptureDeviceInput *videoDeviceInout;
 @property (nonatomic, strong) AVCaptureDeviceInput *audioDeviceInout;
+@property (nonatomic, strong) AVCaptureDeviceDiscoverySession *discoverySession;
+
 
 @property (nonatomic, strong) AVCapturePhotoOutput *photoOutput;
 @property (nonatomic, strong) AVPhotoCaptureDelegate *photoCapDelegate;
@@ -60,8 +62,6 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     return _photoOutput;
 }
 
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -75,6 +75,9 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     
     dispatch_async(self.sessionQueue, ^{
         [self configSession];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self setupUI];
+        });
     });
 }
 
@@ -99,6 +102,7 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     dispatch_async(self.sessionQueue, ^{
         if (self.session.isRunning) {
             [self.session stopRunning];
+            [self removeObserver];
         }
     });
 }
@@ -157,6 +161,8 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
         [self.session commitConfiguration];
         return;
     }
+    NSArray<AVCaptureDeviceType> *types = @[AVCaptureDeviceTypeBuiltInWideAngleCamera];
+    _discoverySession = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:types mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified];
     
     // add audio input
     AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
@@ -174,6 +180,8 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     }
     
     [self.session commitConfiguration];
+    
+    [self addObserver];
 }
 
 - (void)configSessionFailedHandle {
@@ -212,13 +220,143 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
 
 - (void)setupPhotoSettings {
     AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
-    if (self.videoDeviceInout.device.flashAvailable) {
+    if (self.videoDeviceInout.device.position == AVCaptureDevicePositionBack &&
+        self.videoDeviceInout.device.flashAvailable) {
         // 设置闪光灯模式
         settings.flashMode = AVCaptureFlashModeAuto;
     }
     _photoCapDelegate = [[AVPhotoCaptureDelegate alloc] initWithRequestedPhotoSettings:settings];
     [self.photoOutput capturePhotoWithSettings:settings delegate:_photoCapDelegate];
 }
+
+
+- (void)setupUI
+{
+    if (self.camSetupResult != AVCameraSetupResultSuccess) return;
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
+    [button setTitle:@"switch" forState:UIControlStateNormal];
+    button.titleLabel.font = [UIFont systemFontOfSize:15];
+    button.backgroundColor = [UIColor colorWithRed:68/255.0 green:168/255.0 blue:242/255.0 alpha:1.0];
+    [self.view addSubview:button];
+    button.center = CGPointMake(50, 150);
+    [button addTarget:self
+               action:@selector(switchCamera:)
+     forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)switchCamera:(UIButton *)button {
+    dispatch_async(self.sessionQueue, ^{
+        AVCaptureDevicePosition position = self.videoDeviceInout.device.position;
+        AVCaptureDevice *targetDevice = nil;
+        if (position == AVCaptureDevicePositionBack) { // // 后置 --> 前置
+            for (AVCaptureDevice *device in self.discoverySession.devices) {
+                if (device.position == AVCaptureDevicePositionFront) {
+                    targetDevice = device;
+                    continue;
+                }
+            }
+        } else { // 前置 --> 后置
+            for (AVCaptureDevice *device in self.discoverySession.devices) {
+                if (device.position == AVCaptureDevicePositionBack) {
+                    targetDevice = device;
+                    continue;
+                }
+            }
+        }
+        
+        if (targetDevice) {
+            NSError *error = nil;
+            AVCaptureDeviceInput *videoDeviceInout = [AVCaptureDeviceInput deviceInputWithDevice:targetDevice error:&error];
+            if (error) {
+                NSLog(@"AVCaptureDeviceInput error = %@", error);
+                return;
+            }
+            
+            [self.session beginConfiguration];
+            [self.session removeInput:self.videoDeviceInout];
+            self.videoDeviceInout = nil;
+            if ([self.session canAddInput:videoDeviceInout]) {
+                [self.session addInput:videoDeviceInout];
+                self.videoDeviceInout = videoDeviceInout;
+            }
+            [self.session commitConfiguration];
+        }
+    });
+}
+
+
+#pragma mark - observer
+
+/*
+ AVCaptureSessionRuntimeErrorNotification // 拍摄过程中出现错误通知
+ AVCaptureSessionDidStartRunningNotification    // 开始运行通知
+ AVCaptureSessionDidStopRunningNotification     // 停止运行通知
+ AVCaptureSessionWasInterruptedNotification     // 被打断通知
+ AVCaptureSessionInterruptionEndedNotification
+ */
+
+- (void)addObserver {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self
+               selector:@selector(sessionRuntimeError:)
+                   name:AVCaptureSessionRuntimeErrorNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(sessionDidStartRunning:)
+                   name:AVCaptureSessionDidStartRunningNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(sessionDidStopRunning:)
+                   name:AVCaptureSessionDidStopRunningNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(sessionWasInterrupted:)
+                   name:AVCaptureSessionWasInterruptedNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(sessionWasInterrupted:)
+                   name:AVCaptureSessionInterruptionEndedNotification
+                 object:nil];
+}
+
+
+- (void)removeObserver {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:AVCaptureSessionRuntimeErrorNotification object:nil];
+    [center removeObserver:self name:AVCaptureSessionDidStartRunningNotification object:nil];
+    [center removeObserver:self name:AVCaptureSessionDidStopRunningNotification object:nil];
+    [center removeObserver:self name:AVCaptureSessionWasInterruptedNotification object:nil];
+    [center removeObserver:self name:AVCaptureSessionInterruptionEndedNotification object:nil];
+}
+
+#pragma mark - notification handle
+
+- (void)sessionRuntimeError:(NSNotification *)notification {
+    NSError *error = notification.userInfo[AVCaptureSessionErrorKey];
+    NSLog(@"%s, error = %@", __FUNCTION__, error);
+}
+
+- (void)sessionDidStartRunning:(NSNotification *)notification {
+    NSLog(@"%s", __FUNCTION__);
+}
+
+- (void)sessionDidStopRunning:(NSNotification *)notification {
+    NSLog(@"%s", __FUNCTION__);
+}
+
+- (void)sessionWasInterrupted:(NSNotification *)notification {
+    NSLog(@"%s", __FUNCTION__);
+    NSNumber *reason = notification.userInfo[AVCaptureSessionInterruptionReasonKey];
+    if (reason) {
+        NSLog(@"InterruptionReason = %@", reason);
+    }
+}
+
+- (void)sessionInterruptionEnded:(NSNotification *)notification {
+    NSLog(@"%s", __FUNCTION__);
+}
+
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
