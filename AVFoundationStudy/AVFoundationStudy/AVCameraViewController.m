@@ -10,7 +10,7 @@
 
 #import "AVCameraViewController.h"
 #import "AVCameraPreviewView.h"
-
+#import "AVPhotoCaptureDelegate.h"
 
 typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     AVCameraSetupResultSuccess,
@@ -23,6 +23,12 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
 @property (nonatomic, strong) AVCameraPreviewView *previewView;
 @property (nonatomic, strong) AVCaptureSession *session;
 @property (nonatomic, strong) dispatch_queue_t sessionQueue;
+
+@property (nonatomic, strong) AVCaptureDeviceInput *videoDeviceInout;
+@property (nonatomic, strong) AVCaptureDeviceInput *audioDeviceInout;
+
+@property (nonatomic, strong) AVCapturePhotoOutput *photoOutput;
+@property (nonatomic, strong) AVPhotoCaptureDelegate *photoCapDelegate;
 
 @property (nonatomic, assign) AVCameraSetupResult camSetupResult;
 
@@ -45,6 +51,17 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     return _session;
 }
 
+- (AVCapturePhotoOutput *)photoOutput {
+    if (!_photoOutput) {
+        _photoOutput = [AVCapturePhotoOutput new];
+        _photoOutput.highResolutionCaptureEnabled = YES;
+        _photoOutput.livePhotoCaptureEnabled = _photoOutput.livePhotoCaptureSupported;
+    }
+    return _photoOutput;
+}
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
@@ -58,6 +75,31 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     
     dispatch_async(self.sessionQueue, ^{
         [self configSession];
+    });
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    dispatch_async(self.sessionQueue, ^{
+        if (self.camSetupResult == AVCameraSetupResultSuccess) {
+            if (!self.session.isRunning) {
+                [self.session startRunning];
+            }
+        } else {
+            // config session failed
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self configSessionFailedHandle];
+            });
+        }
+    });
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    dispatch_async(self.sessionQueue, ^{
+        if (self.session.isRunning) {
+            [self.session stopRunning];
+        }
     });
 }
 
@@ -105,10 +147,10 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     }
     
     // add video input
-    
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:NULL];
     if (videoInput && [self.session canAddInput:videoInput]) {
+        self.videoDeviceInout = videoInput;
         [self.session addInput:videoInput];
     } else {
         self.camSetupResult = AVCameraSetupResultSessionConfigFailed;
@@ -117,19 +159,73 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     }
     
     // add audio input
-    
     AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:NULL];
     if (audioInput && [self.session canAddInput:audioInput]) {
+        self.audioDeviceInout = audioInput;
         [self.session addInput:audioInput];
     } else {
         [self.session commitConfiguration];
         return;
     }
     
+    if ([self.session canAddOutput:self.photoOutput]) {
+        [self.session addOutput:self.photoOutput];
+    }
+    
     [self.session commitConfiguration];
 }
 
+- (void)configSessionFailedHandle {
+    
+    switch (self.camSetupResult) {
+        case AVCameraSetupResultCameraNotAuthorized:
+        {
+            UIAlertController *alertContr = [UIAlertController alertControllerWithTitle:@"" message:@"没有相机使用权限" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:NULL];
+            [alertContr addAction:cancel];
+
+            UIAlertAction *setting = [UIAlertAction actionWithTitle:@"前往设置" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                [[UIApplication sharedApplication] openURL:url
+                                                   options:@{}
+                                         completionHandler:NULL];
+            }];
+            [alertContr addAction:setting];
+            
+            [self presentViewController:alertContr animated:YES completion:NULL];
+            
+            break;
+        }
+        case AVCameraSetupResultSessionConfigFailed:
+        {
+            UIAlertController *alertContr = [UIAlertController alertControllerWithTitle:@"" message:@"设置相机错误" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:NULL];
+            [alertContr addAction:cancel];
+            [self presentViewController:alertContr animated:YES completion:NULL];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)setupPhotoSettings {
+    AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
+    if (self.videoDeviceInout.device.flashAvailable) {
+        // 设置闪光灯模式
+        settings.flashMode = AVCaptureFlashModeAuto;
+    }
+    _photoCapDelegate = [AVPhotoCaptureDelegate new];
+    [self.photoOutput capturePhotoWithSettings:settings delegate:_photoCapDelegate];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    dispatch_async(self.sessionQueue, ^{
+        [self setupPhotoSettings];
+    });
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

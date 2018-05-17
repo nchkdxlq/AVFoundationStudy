@@ -17,6 +17,7 @@
 		08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA520AC74B60024A294 /* AVNavigationController.m */; };
 		08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA820AC76630024A294 /* AVCameraViewController.m */; };
 		08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CAB20AC79340024A294 /* AVCameraPreviewView.m */; };
+		767B65CD20AD567F00D154F5 /* AVPhotoCaptureDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,8 @@
 		08580CA820AC76630024A294 /* AVCameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraViewController.m; sourceTree = "<group>"; };
 		08580CAA20AC79340024A294 /* AVCameraPreviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVCameraPreviewView.h; sourceTree = "<group>"; };
 		08580CAB20AC79340024A294 /* AVCameraPreviewView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraPreviewView.m; sourceTree = "<group>"; };
+		767B65CB20AD567E00D154F5 /* AVPhotoCaptureDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVPhotoCaptureDelegate.h; sourceTree = "<group>"; };
+		767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVPhotoCaptureDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +125,8 @@
 				08580CA820AC76630024A294 /* AVCameraViewController.m */,
 				08580CAA20AC79340024A294 /* AVCameraPreviewView.h */,
 				08580CAB20AC79340024A294 /* AVCameraPreviewView.m */,
+				767B65CB20AD567E00D154F5 /* AVPhotoCaptureDelegate.h */,
+				767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */,
 			);
 			path = AVFoundationStudy;
 			sourceTree = "<group>";
@@ -276,6 +281,7 @@
 				08580C7720ABB35B0024A294 /* ViewController.m in Sources */,
 				08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */,
 				08580C8220ABB35E0024A294 /* main.m in Sources */,
+				767B65CD20AD567F00D154F5 /* AVPhotoCaptureDelegate.m in Sources */,
 				08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */,
 				08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */,
 				08580C7420ABB35B0024A294 /* AppDelegate.m in Sources */,
