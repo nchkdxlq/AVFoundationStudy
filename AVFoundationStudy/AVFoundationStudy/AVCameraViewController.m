@@ -216,7 +216,7 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
         // 设置闪光灯模式
         settings.flashMode = AVCaptureFlashModeAuto;
     }
-    _photoCapDelegate = [AVPhotoCaptureDelegate new];
+    _photoCapDelegate = [[AVPhotoCaptureDelegate alloc] initWithRequestedPhotoSettings:settings];
     [self.photoOutput capturePhotoWithSettings:settings delegate:_photoCapDelegate];
 }
 

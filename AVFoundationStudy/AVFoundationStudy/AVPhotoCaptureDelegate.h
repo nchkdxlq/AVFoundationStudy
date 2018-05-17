@@ -12,4 +12,8 @@
 
 @interface AVPhotoCaptureDelegate : NSObject <AVCapturePhotoCaptureDelegate>
 
+- (instancetype)initWithRequestedPhotoSettings:(AVCapturePhotoSettings *)requestedPhotoSettings;
+
+@property (nonatomic, readonly) AVCapturePhotoSettings *requestedPhotoSettings;
+
 @end
