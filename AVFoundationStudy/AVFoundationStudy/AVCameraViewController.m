@@ -152,6 +152,7 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     
     // add video input
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    [self configVideoDevice:videoDevice];
     AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:NULL];
     if (videoInput && [self.session canAddInput:videoInput]) {
         self.videoDeviceInout = videoInput;
@@ -171,12 +172,17 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
         self.audioDeviceInout = audioInput;
         [self.session addInput:audioInput];
     } else {
+        self.camSetupResult = AVCameraSetupResultSessionConfigFailed;
         [self.session commitConfiguration];
         return;
     }
     
     if ([self.session canAddOutput:self.photoOutput]) {
         [self.session addOutput:self.photoOutput];
+    } else {
+        self.camSetupResult = AVCameraSetupResultSessionConfigFailed;
+        [self.session commitConfiguration];
+        return;
     }
     
     [self.session commitConfiguration];
@@ -253,19 +259,21 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
             for (AVCaptureDevice *device in self.discoverySession.devices) {
                 if (device.position == AVCaptureDevicePositionFront) {
                     targetDevice = device;
-                    continue;
+                    break;
                 }
             }
         } else { // 前置 --> 后置
             for (AVCaptureDevice *device in self.discoverySession.devices) {
                 if (device.position == AVCaptureDevicePositionBack) {
                     targetDevice = device;
-                    continue;
+                    break;
                 }
             }
         }
         
         if (targetDevice) {
+            [self configVideoDevice:targetDevice];
+
             NSError *error = nil;
             AVCaptureDeviceInput *videoDeviceInout = [AVCaptureDeviceInput deviceInputWithDevice:targetDevice error:&error];
             if (error) {
@@ -285,6 +293,87 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     });
 }
 
+
+- (void)configVideoDevice:(AVCaptureDevice *)device {
+    if ([device lockForConfiguration:NULL] == NO) return;
+    /*
+     1. 对焦模式
+     AVCaptureFocusModeLocked   // 锁定当前的焦距
+     AVCaptureFocusModeAutoFocus   // 只自动对焦一次，对焦一次后，切换到AVCaptureFocusModeLocked模式
+     AVCaptureFocusModeContinuousAutoFocus // 在需要的时候就会自动对焦
+     */
+    if ([device isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
+        device.focusMode = AVCaptureFocusModeAutoFocus;
+    }
+    
+#if 0
+    // 可以对焦指定位置，例如拍照时，点击屏幕某个点，就对焦到对应位置。
+    if ([device isFocusPointOfInterestSupported]) {
+        device.focusPointOfInterest = CGPointMake(0.5, 0.5);
+    }
+#endif
+    
+    /*
+     设置曝光模式
+     AVCaptureExposureModeLocked    // 锁定当前曝光值
+     AVCaptureExposureModeAutoExpose // 自动调整一次曝光值，然后切换到AVCaptureExposureModeLocked模式，锁定当前曝光值
+     AVCaptureExposureModeContinuousAutoExposure // 在需要调整曝光值得时候会自动调整
+     AVCaptureExposureModeCustom // 自定义曝光值
+     */
+    if ([device isExposureModeSupported:AVCaptureExposureModeAutoExpose]) {
+        device.exposureMode = AVCaptureExposureModeAutoExpose;
+    }
+    
+#if 0
+    // 如果exposureMode == AVCaptureExposureModeCustom, 还可以自定义曝光参数，
+    [device setExposureTargetBias:AVCaptureExposureTargetBiasCurrent
+                completionHandler:^(CMTime syncTime) {
+    }];
+#endif
+    
+    /*
+     设置白平衡模式
+     AVCaptureWhiteBalanceModeLocked
+     AVCaptureWhiteBalanceModeAutoWhiteBalance
+     AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance
+     */
+    if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
+        device.whiteBalanceMode = AVCaptureWhiteBalanceModeLocked;
+    }
+#if 0
+    // 还可以自定义白平衡值
+    AVCaptureWhiteBalanceGains gains;
+    gains.redGain = 0.0;
+    gains.greenGain = 0.0;
+    gains.blueGain = 0.0;
+    [device setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains:gains
+                                               completionHandler:^(CMTime syncTime) {
+                                               }];
+#endif
+    /*
+     在拍视频时闪光灯的模式
+     AVCaptureTorchModeOff  = 0,
+     AVCaptureTorchModeOn   = 1,
+     AVCaptureTorchModeAuto = 2,
+     */
+    if ([device isTorchModeSupported:AVCaptureTorchModeOff]) {
+        device.torchMode = AVCaptureTorchModeOff;
+    }
+#if 0
+    // 还可以设置闪光灯的亮度
+    device.torchLevel = 0.2;
+#endif
+    
+    /*
+     拍照时的闪光灯模式设置
+     */
+#if 0
+    device.flashMode
+    AVCapturePhotoSettings.flashMode
+#endif
+    
+    [device unlockForConfiguration];
+}
 
 #pragma mark - observer
 
