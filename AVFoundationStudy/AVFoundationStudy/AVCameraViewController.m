@@ -7,10 +7,12 @@
 //
 
 @import AVFoundation;
+@import Photos;
 
 #import "AVCameraViewController.h"
 #import "AVCameraPreviewView.h"
 #import "AVPhotoCaptureDelegate.h"
+#import "UIScreen+easy.h"
 
 typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     AVCameraSetupResultSuccess,
@@ -18,7 +20,12 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     AVCameraSetupResultSessionConfigFailed
 };
 
-@interface AVCameraViewController ()
+typedef NS_ENUM(NSInteger, AVCaptureMode) {
+    AVCaptureModePhoto,
+    AVCaptureModeMovie
+};
+
+@interface AVCameraViewController () <AVCaptureFileOutputRecordingDelegate>
 
 @property (nonatomic, strong) AVCameraPreviewView *previewView;
 @property (nonatomic, strong) AVCaptureSession *session;
@@ -33,6 +40,14 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
 @property (nonatomic, strong) AVPhotoCaptureDelegate *photoCapDelegate;
 
 @property (nonatomic, assign) AVCameraSetupResult camSetupResult;
+@property (nonatomic, assign) AVCaptureMode captureMode;
+
+@property (nonatomic, strong) AVCaptureMovieFileOutput *movieFileOutput;
+@property (nonatomic, strong) AVCaptureConnection *movieFileConnection;
+
+@property (nonatomic, strong) UIButton *photoButton;
+@property (nonatomic, strong) UIButton *recorderMovieButton;
+@property (nonatomic, strong) UILabel *modeLabel;
 
 @end
 
@@ -58,6 +73,13 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
         _photoOutput = [AVCapturePhotoOutput new];
         _photoOutput.highResolutionCaptureEnabled = YES;
         _photoOutput.livePhotoCaptureEnabled = _photoOutput.livePhotoCaptureSupported;
+        
+        AVCapturePhotoSettings *settings = [AVCapturePhotoSettings new];
+        settings.flashMode = AVCaptureFlashModeAuto;
+        settings.autoStillImageStabilizationEnabled = YES;
+        _photoOutput.photoSettingsForSceneMonitoring = settings;
+//        _photoOutput.isFlashScene =
+//        _photoOutput.isStillImageStabilizationScene =
     }
     return _photoOutput;
 }
@@ -69,6 +91,7 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     self.previewView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.previewView.session = self.session;
     
+    
     self.sessionQueue = dispatch_queue_create("config.session.queue", DISPATCH_QUEUE_SERIAL);
     
     [self requestDeviceAccess];
@@ -77,6 +100,7 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
         [self configSession];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self setupUI];
+            [self updateUIForCaptureMode:self.captureMode];
         });
     });
 }
@@ -106,6 +130,93 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
         }
     });
 }
+
+- (void)performInSessionQueue:(dispatch_block_t)block {
+    if (block == NULL) return;
+    dispatch_async(self.sessionQueue, block);
+}
+
+#pragma mark - setup UI
+
+- (void)setupUI
+{
+    if (self.camSetupResult != AVCameraSetupResultSuccess) return;
+
+    _modeLabel = [UILabel new];
+    _modeLabel.textAlignment = NSTextAlignmentCenter;
+    _modeLabel.backgroundColor = [UIColor clearColor];
+    _modeLabel.textColor = [UIColor yellowColor];
+    [self.view addSubview:_modeLabel];
+    _modeLabel.frame = CGRectMake(0, 80, UIScreen.width, 30);
+    
+    // 切换模式
+    UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:@[@"Photo", @"Movie"]];
+    [segment setWidth:50 forSegmentAtIndex:0];
+    [segment setWidth:50 forSegmentAtIndex:1];
+    segment.selectedSegmentIndex = 0;
+    [self.view addSubview:segment];
+    segment.center = CGPointMake(UIScreen.width/2.0, UIScreen.height-30);
+    [segment addTarget:self
+                action:@selector(changeCaptureMode:)
+      forControlEvents:UIControlEventValueChanged];
+    
+    // 切换摄像头
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
+    [button setTitle:@"switch" forState:UIControlStateNormal];
+    button.backgroundColor = [UIColor colorWithRed:68/255.0 green:168/255.0 blue:242/255.0 alpha:1.0];
+    button.titleLabel.font = [UIFont systemFontOfSize:15];
+    button.layer.cornerRadius = 4;
+    button.layer.masksToBounds = YES;
+    [self.view addSubview:button];
+    button.center = CGPointMake(50, segment.center.y);
+    [button addTarget:self
+               action:@selector(switchCamera:)
+     forControlEvents:UIControlEventTouchUpInside];
+    
+    // 拍照
+    _photoButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
+    [_photoButton setTitle:@"Photo" forState:UIControlStateNormal];
+    _photoButton.titleLabel.font = button.titleLabel.font;
+    _photoButton.backgroundColor = button.backgroundColor;
+    _photoButton.layer.cornerRadius = 4;
+    _photoButton.layer.masksToBounds = YES;
+    [self.view addSubview:_photoButton];
+    _photoButton.center = CGPointMake(UIScreen.width-50, segment.center.y);
+    [_photoButton addTarget:self
+                     action:@selector(takePhoto)
+           forControlEvents:UIControlEventTouchUpInside];
+    
+    // 录制
+    _recorderMovieButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 30)];
+    [_recorderMovieButton setTitle:@"Recorder" forState:UIControlStateNormal];
+    [_recorderMovieButton setTitle:@"Stop" forState:UIControlStateSelected];
+    _recorderMovieButton.titleLabel.font = button.titleLabel.font;
+    _recorderMovieButton.backgroundColor = button.backgroundColor;
+    _recorderMovieButton.layer.cornerRadius = 4;
+    _recorderMovieButton.layer.masksToBounds = YES;
+    [self.view addSubview:_recorderMovieButton];
+    _recorderMovieButton.center = _photoButton.center;
+    [_recorderMovieButton addTarget:self
+                             action:@selector(recorderMovie:)
+                   forControlEvents:UIControlEventTouchUpInside];
+    
+}
+
+
+- (void)updateUIForCaptureMode:(AVCaptureMode)mode {
+    if (mode == AVCaptureModePhoto) {
+        _recorderMovieButton.hidden = YES;
+        _photoButton.hidden = NO;
+        _modeLabel.text = @"PhotoMode";
+    } else {
+        _photoButton.hidden = YES;
+        _recorderMovieButton.hidden = NO;
+        _modeLabel.text = @"MovieMode";
+    }
+}
+
+
+#pragma mark - AVAuthorizationStatus
 
 - (void)requestDeviceAccess {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -138,6 +249,7 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     }
 }
 
+#pragma mark - config input & ouput
 
 - (void)configSession {
     if (self.camSetupResult != AVCameraSetupResultSuccess) {
@@ -190,6 +302,92 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     [self addObserver];
 }
 
+
+#pragma mark - config device
+
+- (void)configVideoDevice:(AVCaptureDevice *)device {
+    if ([device lockForConfiguration:NULL] == NO) return;
+    /*
+     1. 对焦模式
+     AVCaptureFocusModeLocked   // 锁定当前的焦距
+     AVCaptureFocusModeAutoFocus   // 只自动对焦一次，对焦一次后，切换到AVCaptureFocusModeLocked模式
+     AVCaptureFocusModeContinuousAutoFocus // 在需要的时候就会自动对焦
+     */
+    if ([device isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
+        device.focusMode = AVCaptureFocusModeAutoFocus;
+    }
+    
+#if 0
+    // 可以对焦指定位置，例如拍照时，点击屏幕某个点，就对焦到对应位置。
+    if ([device isFocusPointOfInterestSupported]) {
+        device.focusPointOfInterest = CGPointMake(0.5, 0.5);
+    }
+#endif
+    
+    /*
+     设置曝光模式
+     AVCaptureExposureModeLocked    // 锁定当前曝光值
+     AVCaptureExposureModeAutoExpose // 自动调整一次曝光值，然后切换到AVCaptureExposureModeLocked模式，锁定当前曝光值
+     AVCaptureExposureModeContinuousAutoExposure // 在需要调整曝光值得时候会自动调整
+     AVCaptureExposureModeCustom // 自定义曝光值
+     */
+    if ([device isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
+        device.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
+    }
+    
+#if 0
+    // 如果exposureMode == AVCaptureExposureModeCustom, 还可以自定义曝光参数，
+    [device setExposureTargetBias:AVCaptureExposureTargetBiasCurrent
+                completionHandler:^(CMTime syncTime) {
+                }];
+#endif
+    
+    /*
+     设置白平衡模式
+     AVCaptureWhiteBalanceModeLocked
+     AVCaptureWhiteBalanceModeAutoWhiteBalance
+     AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance
+     */
+    if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance]) {
+        device.whiteBalanceMode = AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance;
+    }
+#if 0
+    // 还可以自定义白平衡值
+    AVCaptureWhiteBalanceGains gains;
+    gains.redGain = 0.0;
+    gains.greenGain = 0.0;
+    gains.blueGain = 0.0;
+    [device setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains:gains
+                                               completionHandler:^(CMTime syncTime) {
+                                               }];
+#endif
+    /*
+     在拍视频时闪光灯的模式
+     AVCaptureTorchModeOff  = 0,
+     AVCaptureTorchModeOn   = 1,
+     AVCaptureTorchModeAuto = 2,
+     */
+    if ([device isTorchModeSupported:AVCaptureTorchModeOff]) {
+        device.torchMode = AVCaptureTorchModeOff;
+    }
+#if 0
+    // 还可以设置闪光灯的亮度
+    device.torchLevel = 0.2;
+#endif
+    
+    /*
+     拍照时的闪光灯模式设置
+     */
+#if 0
+    device.flashMode
+    AVCapturePhotoSettings.flashMode
+#endif
+    
+    [device unlockForConfiguration];
+}
+
+#pragma mark - failedHandle
+
 - (void)configSessionFailedHandle {
     
     switch (self.camSetupResult) {
@@ -224,32 +422,43 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     }
 }
 
-- (void)setupPhotoSettings {
-    AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
-    if (self.videoDeviceInout.device.position == AVCaptureDevicePositionBack &&
-        self.videoDeviceInout.device.flashAvailable) {
-        // 设置闪光灯模式
-        settings.flashMode = AVCaptureFlashModeAuto;
+
+#pragma mark - captureMode
+
+- (void)changeCaptureMode:(UISegmentedControl *)segment {
+    if (segment.selectedSegmentIndex == 0) {
+        self.captureMode = AVCaptureModePhoto;
+        dispatch_async(self.sessionQueue, ^{
+            [self.session beginConfiguration];
+            [self.session removeOutput:self.movieFileOutput];
+            self.movieFileOutput = nil;
+            self.session.sessionPreset = AVCaptureSessionPresetPhoto;
+            
+            [self.session commitConfiguration];
+        });
+    } else {
+        self.captureMode = AVCaptureModeMovie;
+        dispatch_async(self.sessionQueue, ^{
+            AVCaptureMovieFileOutput *movieFileOutput = [AVCaptureMovieFileOutput new];
+            if ([self.session canAddOutput:movieFileOutput] == NO) {
+                return;
+            }
+            [self.session beginConfiguration];
+            self.session.sessionPreset = AVCaptureSessionPresetHigh;
+            [self.session addOutput:movieFileOutput];
+            AVCaptureConnection *connection = [self.movieFileOutput connectionWithMediaType:AVMediaTypeVideo];
+            if (connection.isVideoStabilizationSupported) {
+                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeAuto;
+            }
+            [self.session commitConfiguration];
+            self.movieFileOutput = movieFileOutput;
+        });
     }
-    _photoCapDelegate = [[AVPhotoCaptureDelegate alloc] initWithRequestedPhotoSettings:settings];
-    [self.photoOutput capturePhotoWithSettings:settings delegate:_photoCapDelegate];
-}
-
-
-- (void)setupUI
-{
-    if (self.camSetupResult != AVCameraSetupResultSuccess) return;
     
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 30)];
-    [button setTitle:@"switch" forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont systemFontOfSize:15];
-    button.backgroundColor = [UIColor colorWithRed:68/255.0 green:168/255.0 blue:242/255.0 alpha:1.0];
-    [self.view addSubview:button];
-    button.center = CGPointMake(50, 150);
-    [button addTarget:self
-               action:@selector(switchCamera:)
-     forControlEvents:UIControlEventTouchUpInside];
+    [self updateUIForCaptureMode:self.captureMode];
 }
+
+#pragma mark - change Camera
 
 - (void)switchCamera:(UIButton *)button {
     dispatch_async(self.sessionQueue, ^{
@@ -293,86 +502,91 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     });
 }
 
+#pragma mark - Photo
 
-- (void)configVideoDevice:(AVCaptureDevice *)device {
-    if ([device lockForConfiguration:NULL] == NO) return;
-    /*
-     1. 对焦模式
-     AVCaptureFocusModeLocked   // 锁定当前的焦距
-     AVCaptureFocusModeAutoFocus   // 只自动对焦一次，对焦一次后，切换到AVCaptureFocusModeLocked模式
-     AVCaptureFocusModeContinuousAutoFocus // 在需要的时候就会自动对焦
-     */
-    if ([device isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
-        device.focusMode = AVCaptureFocusModeAutoFocus;
+- (void)takePhoto {
+    
+    AVCapturePhotoSettings *settings = [AVCapturePhotoSettings photoSettings];
+    if (self.videoDeviceInout.device.position == AVCaptureDevicePositionBack &&
+        self.videoDeviceInout.device.flashAvailable) {
+        // 设置闪光灯模式
+        settings.flashMode = AVCaptureFlashModeAuto;
+    }
+    _photoCapDelegate = [[AVPhotoCaptureDelegate alloc] initWithRequestedPhotoSettings:settings];
+    [self.photoOutput capturePhotoWithSettings:settings delegate:_photoCapDelegate];
+}
+
+#pragma mark - Movie
+
+- (void)recorderMovie:(UIButton *)button {
+    button.selected = !button.isSelected;
+    
+    AVCaptureVideoOrientation videoPreviewLayerVideoOrientation = self.previewView.videoPreviewLayer.connection.videoOrientation;
+    
+    dispatch_async(self.sessionQueue, ^{
+        if (self.movieFileOutput.isRecording) {
+            [self.movieFileOutput stopRecording];
+        } else {
+            AVCaptureConnection *connection = [self.movieFileOutput connectionWithMediaType:AVMediaTypeVideo];
+            connection.videoOrientation = videoPreviewLayerVideoOrientation;
+            if (@available(iOS 11.0, *)) {
+                if ([self.movieFileOutput.availableVideoCodecTypes containsObject:AVVideoCodecTypeHEVC]) {
+                    [self.movieFileOutput setOutputSettings:@{ AVVideoCodecKey:AVVideoCodecTypeHEVC }
+                                              forConnection:connection];
+                }
+            } else {
+                
+            }
+            NSString *fileName = [NSUUID UUID].UUIDString;
+            NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:[fileName stringByAppendingPathExtension:@"mov"]];
+            [self.movieFileOutput startRecordingToOutputFileURL:[NSURL fileURLWithPath:path]
+                                              recordingDelegate:self];
+        }
+    });
+}
+
+- (void)captureOutput:(AVCaptureFileOutput *)output
+didStartRecordingToOutputFileAtURL:(NSURL *)fileURL
+      fromConnections:(NSArray<AVCaptureConnection *> *)connections {
+    NSLog(@"didStartRecordingToOutputFileAtURL");
+}
+
+
+- (void)captureOutput:(AVCaptureFileOutput *)output
+didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
+      fromConnections:(NSArray<AVCaptureConnection *> *)connections
+                error:(NSError *)error {
+    NSLog(@"didFinishRecordingToOutputFileAtURL");
+    
+    dispatch_block_t cleanUp = ^{
+        if ( [[NSFileManager defaultManager] fileExistsAtPath:outputFileURL.path] ) {
+            [[NSFileManager defaultManager] removeItemAtPath:outputFileURL.path error:NULL];
+        }
+    };
+    
+    if (error) {
+        NSLog(@"error = %@", error);
+        cleanUp();
+        return;
     }
     
-#if 0
-    // 可以对焦指定位置，例如拍照时，点击屏幕某个点，就对焦到对应位置。
-    if ([device isFocusPointOfInterestSupported]) {
-        device.focusPointOfInterest = CGPointMake(0.5, 0.5);
-    }
-#endif
     
-    /*
-     设置曝光模式
-     AVCaptureExposureModeLocked    // 锁定当前曝光值
-     AVCaptureExposureModeAutoExpose // 自动调整一次曝光值，然后切换到AVCaptureExposureModeLocked模式，锁定当前曝光值
-     AVCaptureExposureModeContinuousAutoExposure // 在需要调整曝光值得时候会自动调整
-     AVCaptureExposureModeCustom // 自定义曝光值
-     */
-    if ([device isExposureModeSupported:AVCaptureExposureModeAutoExpose]) {
-        device.exposureMode = AVCaptureExposureModeAutoExpose;
-    }
-    
-#if 0
-    // 如果exposureMode == AVCaptureExposureModeCustom, 还可以自定义曝光参数，
-    [device setExposureTargetBias:AVCaptureExposureTargetBiasCurrent
-                completionHandler:^(CMTime syncTime) {
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        if (status != PHAuthorizationStatusAuthorized) {
+            cleanUp();
+            return;
+        }
+        
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            PHAssetResourceCreationOptions *options = [PHAssetResourceCreationOptions new];
+            options.shouldMoveFile = YES;
+            
+            PHAssetCreationRequest *creationRequest = [PHAssetCreationRequest creationRequestForAsset];
+            [creationRequest addResourceWithType:PHAssetResourceTypeVideo fileURL:outputFileURL options:options];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            cleanUp();
+        }];
     }];
-#endif
-    
-    /*
-     设置白平衡模式
-     AVCaptureWhiteBalanceModeLocked
-     AVCaptureWhiteBalanceModeAutoWhiteBalance
-     AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance
-     */
-    if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
-        device.whiteBalanceMode = AVCaptureWhiteBalanceModeLocked;
-    }
-#if 0
-    // 还可以自定义白平衡值
-    AVCaptureWhiteBalanceGains gains;
-    gains.redGain = 0.0;
-    gains.greenGain = 0.0;
-    gains.blueGain = 0.0;
-    [device setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains:gains
-                                               completionHandler:^(CMTime syncTime) {
-                                               }];
-#endif
-    /*
-     在拍视频时闪光灯的模式
-     AVCaptureTorchModeOff  = 0,
-     AVCaptureTorchModeOn   = 1,
-     AVCaptureTorchModeAuto = 2,
-     */
-    if ([device isTorchModeSupported:AVCaptureTorchModeOff]) {
-        device.torchMode = AVCaptureTorchModeOff;
-    }
-#if 0
-    // 还可以设置闪光灯的亮度
-    device.torchLevel = 0.2;
-#endif
-    
-    /*
-     拍照时的闪光灯模式设置
-     */
-#if 0
-    device.flashMode
-    AVCapturePhotoSettings.flashMode
-#endif
-    
-    [device unlockForConfiguration];
 }
 
 #pragma mark - observer
@@ -446,13 +660,6 @@ typedef NS_ENUM(NSInteger, AVCameraSetupResult) {
     NSLog(@"%s", __FUNCTION__);
 }
 
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [super touchesBegan:touches withEvent:event];
-    dispatch_async(self.sessionQueue, ^{
-        [self setupPhotoSettings];
-    });
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
