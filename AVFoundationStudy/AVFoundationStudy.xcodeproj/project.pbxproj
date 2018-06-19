@@ -17,8 +17,12 @@
 		08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA520AC74B60024A294 /* AVNavigationController.m */; };
 		08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA820AC76630024A294 /* AVCameraViewController.m */; };
 		08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CAB20AC79340024A294 /* AVCameraPreviewView.m */; };
-		08F995EA20CCBC3F002865E2 /* UIScreen+easy.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F995E920CCBC3F002865E2 /* UIScreen+easy.m */; };
 		767B65CD20AD567F00D154F5 /* AVPhotoCaptureDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */; };
+		76BCDA8620CE9FAB006B2AF1 /* AVVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BCDA8520CE9FAB006B2AF1 /* AVVideoPlayerViewController.m */; };
+		76BCDA8920CEA03B006B2AF1 /* AVVideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BCDA8820CEA03B006B2AF1 /* AVVideoPlayerView.m */; };
+		76BCDA8B20CEA56B006B2AF1 /* video1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 76BCDA8A20CEA56B006B2AF1 /* video1.mp4 */; };
+		76BCDA8F20CEADCB006B2AF1 /* UIScreen+easy.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BCDA8E20CEADCB006B2AF1 /* UIScreen+easy.m */; };
+		76BCDA9520CEADFA006B2AF1 /* UIColor+easy.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BCDA9420CEADFA006B2AF1 /* UIColor+easy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,10 +64,17 @@
 		08580CA820AC76630024A294 /* AVCameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraViewController.m; sourceTree = "<group>"; };
 		08580CAA20AC79340024A294 /* AVCameraPreviewView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVCameraPreviewView.h; sourceTree = "<group>"; };
 		08580CAB20AC79340024A294 /* AVCameraPreviewView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraPreviewView.m; sourceTree = "<group>"; };
-		08F995E820CCBC3F002865E2 /* UIScreen+easy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScreen+easy.h"; sourceTree = "<group>"; };
-		08F995E920CCBC3F002865E2 /* UIScreen+easy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+easy.m"; sourceTree = "<group>"; };
 		767B65CB20AD567E00D154F5 /* AVPhotoCaptureDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVPhotoCaptureDelegate.h; sourceTree = "<group>"; };
 		767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVPhotoCaptureDelegate.m; sourceTree = "<group>"; };
+		76BCDA8420CE9FAB006B2AF1 /* AVVideoPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVVideoPlayerViewController.h; sourceTree = "<group>"; };
+		76BCDA8520CE9FAB006B2AF1 /* AVVideoPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVVideoPlayerViewController.m; sourceTree = "<group>"; };
+		76BCDA8720CEA03B006B2AF1 /* AVVideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVVideoPlayerView.h; sourceTree = "<group>"; };
+		76BCDA8820CEA03B006B2AF1 /* AVVideoPlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVVideoPlayerView.m; sourceTree = "<group>"; };
+		76BCDA8A20CEA56B006B2AF1 /* video1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video1.mp4; sourceTree = "<group>"; };
+		76BCDA8D20CEADCB006B2AF1 /* UIScreen+easy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+easy.h"; sourceTree = "<group>"; };
+		76BCDA8E20CEADCB006B2AF1 /* UIScreen+easy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+easy.m"; sourceTree = "<group>"; };
+		76BCDA9320CEADFA006B2AF1 /* UIColor+easy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+easy.h"; sourceTree = "<group>"; };
+		76BCDA9420CEADFA006B2AF1 /* UIColor+easy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+easy.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,8 +141,12 @@
 				08580CAB20AC79340024A294 /* AVCameraPreviewView.m */,
 				767B65CB20AD567E00D154F5 /* AVPhotoCaptureDelegate.h */,
 				767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */,
-				08F995E820CCBC3F002865E2 /* UIScreen+easy.h */,
-				08F995E920CCBC3F002865E2 /* UIScreen+easy.m */,
+				76BCDA8420CE9FAB006B2AF1 /* AVVideoPlayerViewController.h */,
+				76BCDA8520CE9FAB006B2AF1 /* AVVideoPlayerViewController.m */,
+				76BCDA8720CEA03B006B2AF1 /* AVVideoPlayerView.h */,
+				76BCDA8820CEA03B006B2AF1 /* AVVideoPlayerView.m */,
+				76BCDA8C20CEADCB006B2AF1 /* Category */,
+				76BCDA8A20CEA56B006B2AF1 /* video1.mp4 */,
 			);
 			path = AVFoundationStudy;
 			sourceTree = "<group>";
@@ -152,6 +167,17 @@
 				08580C9820ABB35E0024A294 /* Info.plist */,
 			);
 			path = AVFoundationStudyUITests;
+			sourceTree = "<group>";
+		};
+		76BCDA8C20CEADCB006B2AF1 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				76BCDA8D20CEADCB006B2AF1 /* UIScreen+easy.h */,
+				76BCDA8E20CEADCB006B2AF1 /* UIScreen+easy.m */,
+				76BCDA9320CEADFA006B2AF1 /* UIColor+easy.h */,
+				76BCDA9420CEADFA006B2AF1 /* UIColor+easy.m */,
+			);
+			path = Category;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +283,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76BCDA8B20CEA56B006B2AF1 /* video1.mp4 in Resources */,
 				08580C7F20ABB35E0024A294 /* LaunchScreen.storyboard in Resources */,
 				08580C7C20ABB35E0024A294 /* Assets.xcassets in Resources */,
 			);
@@ -284,13 +311,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				08580C7720ABB35B0024A294 /* ViewController.m in Sources */,
+				76BCDA8F20CEADCB006B2AF1 /* UIScreen+easy.m in Sources */,
 				08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */,
 				08580C8220ABB35E0024A294 /* main.m in Sources */,
 				767B65CD20AD567F00D154F5 /* AVPhotoCaptureDelegate.m in Sources */,
+				76BCDA8920CEA03B006B2AF1 /* AVVideoPlayerView.m in Sources */,
+				76BCDA8620CE9FAB006B2AF1 /* AVVideoPlayerViewController.m in Sources */,
 				08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */,
-				08F995EA20CCBC3F002865E2 /* UIScreen+easy.m in Sources */,
 				08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */,
 				08580C7420ABB35B0024A294 /* AppDelegate.m in Sources */,
+				76BCDA9520CEADFA006B2AF1 /* UIColor+easy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

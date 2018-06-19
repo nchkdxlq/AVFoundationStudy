@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "AVCameraViewController.h"
+#import "AVVideoPlayerViewController.h"
 
 
 static NSString * const kRowTitleKey = @"title";
@@ -54,9 +55,10 @@ static NSString * const kRowVCClassKey = @"vcClass";
 
 
 - (void)setupDataSourece {
-    
     [self.dataSource addObject:@{kRowTitleKey:@"Carera Recorder",
                                  kRowVCClassKey:AVCameraViewController.class}];
+    [self.dataSource addObject:@{kRowTitleKey:@"Video Player",
+                                 kRowVCClassKey:AVVideoPlayerViewController.class}];
 }
 
 
