@@ -17,17 +17,18 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-        [self addSubview:backBtn];
-        backBtn.center = CGPointMake(frame.size.width - 30, frame.size.height/2.0);
-        backBtn.backgroundColor = [UIColor yellowColor];
-        [backBtn addTarget:self action:@selector(backButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton *recoverBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        [self addSubview:recoverBtn];
+        recoverBtn.center = CGPointMake(frame.size.width - 30, frame.size.height/2.0);
+        recoverBtn.backgroundColor = [UIColor yellowColor];
+        [recoverBtn addTarget:self action:@selector(recoverButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         
-        CGFloat width = CGRectGetMinX(backBtn.frame);
+        CGFloat width = CGRectGetMinX(recoverBtn.frame);
         _selectColorView = [[IESelectColorView alloc] initWithFrame:CGRectMake(0, 0, width, frame.size.height)];
         [self addSubview:_selectColorView];
         __weak typeof(self) weakSelf = self;
         _selectColorView.didSelectColorBlock = ^(UIColor *color) {
+            [weakSelf setCurrentColor:color];
             !weakSelf.colorUpdateBlock ?: weakSelf.colorUpdateBlock(color);
         };
         _selectColorView.colors = [self getColors];
@@ -40,8 +41,8 @@
     _currentColor = currentColor;
 }
 
-- (void)backButtonAction:(UIButton *)button {
-    !_backBlock ?: _backBlock();
+- (void)recoverButtonAction:(UIButton *)button {
+    !_recoverBlock ?: _recoverBlock();
 }
 
 - (NSArray<UIColor *> *)getColors {

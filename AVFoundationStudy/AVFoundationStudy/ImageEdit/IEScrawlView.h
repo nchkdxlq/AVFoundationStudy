@@ -14,7 +14,7 @@
 
 @property (nonatomic, copy) void(^colorUpdateBlock)(UIColor *color);
 
-@property (nonatomic, copy) void(^backBlock)(void);
+@property (nonatomic, copy) void(^recoverBlock)(void);
 
 @end
 

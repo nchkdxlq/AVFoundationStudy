@@ -170,6 +170,7 @@ NSString * const kCrop = @"crop"; // 裁剪
 #import "IEMosaicView.h"
 #import "IEMosaicTool.h"
 #import "IEMosaicToolbar.h"
+#import "IETextToolView.h"
 
 @interface ImageEditer()<UIScrollViewDelegate>
 
@@ -187,6 +188,8 @@ NSString * const kCrop = @"crop"; // 裁剪
 @property (nonatomic, strong) IEMosaicView *mosaicView;
 @property (nonatomic, strong) IEMosaicToolbar *mosaicToolbar;
 
+// 文本
+@property (nonatomic, strong) IETextToolView *textToolView;
 
 @end
 
@@ -280,8 +283,19 @@ NSString * const kCrop = @"crop"; // 裁剪
     _scrawlView.colorUpdateBlock = ^(UIColor *color) {
         weakSelf.scrawlMaskView.scrawlColor = color;
     };
-    _scrawlView.backBlock = ^{
+    _scrawlView.recoverBlock = ^{
         [weakSelf.scrawlMaskView recoverHandle];
+    };
+    
+    // 文本
+    _textToolView = [[IETextToolView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height, self.bounds.size.width, self.bounds.size.height)];
+    [self addSubview:_textToolView];
+    _textToolView.cancelBlock = ^{
+        [weakSelf dismissTextToolView];
+    };
+    _textToolView.doneBlock = ^(NSString *text) {
+        [weakSelf dismissTextToolView];
+        [weakSelf textToolViewDidDoneText:text];
     };
 }
 
@@ -330,9 +344,36 @@ NSString * const kCrop = @"crop"; // 裁剪
         self.scrawlMaskView.userInteractionEnabled = NO;
         self.mosaicView.userInteractionEnabled = YES;
         self.mosaicToolbar.hidden = NO;
+    } else if ([item.identifier isEqualToString:kText]) {
+        [self showTextToolView];
     }
 }
 
+- (void)showTextToolView {
+    [self.textToolView.textView becomeFirstResponder];
+    [UIView animateWithDuration:0.25 animations:^{
+        CGRect frame = self.textToolView.frame;
+        frame.origin.y = 0;
+        self.textToolView.frame = frame;
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+- (void)dismissTextToolView {
+    [UIView animateWithDuration:0.25 animations:^{
+        CGRect frame = self.textToolView.frame;
+        frame.origin.y = frame.size.height;
+        self.textToolView.frame = frame;
+    } completion:^(BOOL finished) {
+        [self.textToolView.textView resignFirstResponder];
+    }];
+}
+
+#pragma mark - textToolView
+- (void)textToolViewDidDoneText:(NSString *)text {
+    
+}
 
 #pragma mark - UIScrollViewDelegate
 
