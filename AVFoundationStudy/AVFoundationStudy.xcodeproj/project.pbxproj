@@ -18,6 +18,15 @@
 		08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CA820AC76630024A294 /* AVCameraViewController.m */; };
 		08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08580CAB20AC79340024A294 /* AVCameraPreviewView.m */; };
 		767B65CD20AD567F00D154F5 /* AVPhotoCaptureDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */; };
+		769A7B9320DA348C00D44E31 /* IEMosaicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7B9220DA348C00D44E31 /* IEMosaicView.m */; };
+		769A7B9620DA37D800D44E31 /* IEMosaicTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7B9520DA37D800D44E31 /* IEMosaicTool.m */; };
+		769A7B9920DA3F1D00D44E31 /* IEMosaicToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7B9820DA3F1D00D44E31 /* IEMosaicToolbar.m */; };
+		76A7BCF620D8F98F00F6DBDF /* world_cup.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */; };
+		76A7BCF820D8FDFB00F6DBDF /* world_cup_right.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */; };
+		76A7BCFE20D91B9C00F6DBDF /* AVImageEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */; };
+		76A7BCFF20D91B9C00F6DBDF /* ImageEditer.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A7BCFC20D91B9B00F6DBDF /* ImageEditer.m */; };
+		76A7BD0220D91D3700F6DBDF /* IESelectColorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A7BD0120D91D3700F6DBDF /* IESelectColorView.m */; };
+		76A7BD0520D9298C00F6DBDF /* IEScrawlView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A7BD0420D9298C00F6DBDF /* IEScrawlView.m */; };
 		76BCDA8620CE9FAB006B2AF1 /* AVVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BCDA8520CE9FAB006B2AF1 /* AVVideoPlayerViewController.m */; };
 		76BCDA8920CEA03B006B2AF1 /* AVVideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 76BCDA8820CEA03B006B2AF1 /* AVVideoPlayerView.m */; };
 		76BCDA8B20CEA56B006B2AF1 /* video1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 76BCDA8A20CEA56B006B2AF1 /* video1.mp4 */; };
@@ -66,6 +75,22 @@
 		08580CAB20AC79340024A294 /* AVCameraPreviewView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVCameraPreviewView.m; sourceTree = "<group>"; };
 		767B65CB20AD567E00D154F5 /* AVPhotoCaptureDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVPhotoCaptureDelegate.h; sourceTree = "<group>"; };
 		767B65CC20AD567E00D154F5 /* AVPhotoCaptureDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVPhotoCaptureDelegate.m; sourceTree = "<group>"; };
+		769A7B9120DA348C00D44E31 /* IEMosaicView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEMosaicView.h; sourceTree = "<group>"; };
+		769A7B9220DA348C00D44E31 /* IEMosaicView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEMosaicView.m; sourceTree = "<group>"; };
+		769A7B9420DA37D800D44E31 /* IEMosaicTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEMosaicTool.h; sourceTree = "<group>"; };
+		769A7B9520DA37D800D44E31 /* IEMosaicTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEMosaicTool.m; sourceTree = "<group>"; };
+		769A7B9720DA3F1D00D44E31 /* IEMosaicToolbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEMosaicToolbar.h; sourceTree = "<group>"; };
+		769A7B9820DA3F1D00D44E31 /* IEMosaicToolbar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEMosaicToolbar.m; sourceTree = "<group>"; };
+		76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = world_cup.jpg; sourceTree = "<group>"; };
+		76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = world_cup_right.jpg; sourceTree = "<group>"; };
+		76A7BCFA20D91B9B00F6DBDF /* ImageEditer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageEditer.h; sourceTree = "<group>"; };
+		76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVImageEditViewController.m; sourceTree = "<group>"; };
+		76A7BCFC20D91B9B00F6DBDF /* ImageEditer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageEditer.m; sourceTree = "<group>"; };
+		76A7BCFD20D91B9B00F6DBDF /* AVImageEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVImageEditViewController.h; sourceTree = "<group>"; };
+		76A7BD0020D91D3700F6DBDF /* IESelectColorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IESelectColorView.h; sourceTree = "<group>"; };
+		76A7BD0120D91D3700F6DBDF /* IESelectColorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IESelectColorView.m; sourceTree = "<group>"; };
+		76A7BD0320D9298C00F6DBDF /* IEScrawlView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEScrawlView.h; sourceTree = "<group>"; };
+		76A7BD0420D9298C00F6DBDF /* IEScrawlView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEScrawlView.m; sourceTree = "<group>"; };
 		76BCDA8420CE9FAB006B2AF1 /* AVVideoPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVVideoPlayerViewController.h; sourceTree = "<group>"; };
 		76BCDA8520CE9FAB006B2AF1 /* AVVideoPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AVVideoPlayerViewController.m; sourceTree = "<group>"; };
 		76BCDA8720CEA03B006B2AF1 /* AVVideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AVVideoPlayerView.h; sourceTree = "<group>"; };
@@ -145,8 +170,11 @@
 				76BCDA8520CE9FAB006B2AF1 /* AVVideoPlayerViewController.m */,
 				76BCDA8720CEA03B006B2AF1 /* AVVideoPlayerView.h */,
 				76BCDA8820CEA03B006B2AF1 /* AVVideoPlayerView.m */,
+				76A7BCF920D91B9B00F6DBDF /* ImageEdit */,
 				76BCDA8C20CEADCB006B2AF1 /* Category */,
 				76BCDA8A20CEA56B006B2AF1 /* video1.mp4 */,
+				76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */,
+				76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */,
 			);
 			path = AVFoundationStudy;
 			sourceTree = "<group>";
@@ -167,6 +195,27 @@
 				08580C9820ABB35E0024A294 /* Info.plist */,
 			);
 			path = AVFoundationStudyUITests;
+			sourceTree = "<group>";
+		};
+		76A7BCF920D91B9B00F6DBDF /* ImageEdit */ = {
+			isa = PBXGroup;
+			children = (
+				76A7BCFA20D91B9B00F6DBDF /* ImageEditer.h */,
+				76A7BCFC20D91B9B00F6DBDF /* ImageEditer.m */,
+				76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */,
+				76A7BCFD20D91B9B00F6DBDF /* AVImageEditViewController.h */,
+				76A7BD0020D91D3700F6DBDF /* IESelectColorView.h */,
+				76A7BD0120D91D3700F6DBDF /* IESelectColorView.m */,
+				76A7BD0320D9298C00F6DBDF /* IEScrawlView.h */,
+				76A7BD0420D9298C00F6DBDF /* IEScrawlView.m */,
+				769A7B9120DA348C00D44E31 /* IEMosaicView.h */,
+				769A7B9220DA348C00D44E31 /* IEMosaicView.m */,
+				769A7B9420DA37D800D44E31 /* IEMosaicTool.h */,
+				769A7B9520DA37D800D44E31 /* IEMosaicTool.m */,
+				769A7B9720DA3F1D00D44E31 /* IEMosaicToolbar.h */,
+				769A7B9820DA3F1D00D44E31 /* IEMosaicToolbar.m */,
+			);
+			path = ImageEdit;
 			sourceTree = "<group>";
 		};
 		76BCDA8C20CEADCB006B2AF1 /* Category */ = {
@@ -285,7 +334,9 @@
 			files = (
 				76BCDA8B20CEA56B006B2AF1 /* video1.mp4 in Resources */,
 				08580C7F20ABB35E0024A294 /* LaunchScreen.storyboard in Resources */,
+				76A7BCF820D8FDFB00F6DBDF /* world_cup_right.jpg in Resources */,
 				08580C7C20ABB35E0024A294 /* Assets.xcassets in Resources */,
+				76A7BCF620D8F98F00F6DBDF /* world_cup.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,15 +362,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				08580C7720ABB35B0024A294 /* ViewController.m in Sources */,
+				76A7BCFE20D91B9C00F6DBDF /* AVImageEditViewController.m in Sources */,
 				76BCDA8F20CEADCB006B2AF1 /* UIScreen+easy.m in Sources */,
+				769A7B9920DA3F1D00D44E31 /* IEMosaicToolbar.m in Sources */,
 				08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */,
+				76A7BCFF20D91B9C00F6DBDF /* ImageEditer.m in Sources */,
+				769A7B9620DA37D800D44E31 /* IEMosaicTool.m in Sources */,
 				08580C8220ABB35E0024A294 /* main.m in Sources */,
 				767B65CD20AD567F00D154F5 /* AVPhotoCaptureDelegate.m in Sources */,
 				76BCDA8920CEA03B006B2AF1 /* AVVideoPlayerView.m in Sources */,
 				76BCDA8620CE9FAB006B2AF1 /* AVVideoPlayerViewController.m in Sources */,
 				08580CAC20AC79350024A294 /* AVCameraPreviewView.m in Sources */,
+				76A7BD0220D91D3700F6DBDF /* IESelectColorView.m in Sources */,
 				08580CA620AC74B60024A294 /* AVNavigationController.m in Sources */,
 				08580C7420ABB35B0024A294 /* AppDelegate.m in Sources */,
+				76A7BD0520D9298C00F6DBDF /* IEScrawlView.m in Sources */,
+				769A7B9320DA348C00D44E31 /* IEMosaicView.m in Sources */,
 				76BCDA9520CEADFA006B2AF1 /* UIColor+easy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
