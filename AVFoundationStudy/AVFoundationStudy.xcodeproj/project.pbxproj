@@ -24,6 +24,9 @@
 		769A7B9C20DA46B600D44E31 /* IEEmojiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7B9B20DA46B600D44E31 /* IEEmojiView.m */; };
 		769A7B9F20DA4D7800D44E31 /* IETextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7B9E20DA4D7800D44E31 /* IETextView.m */; };
 		769A7BA220DA4D9700D44E31 /* IETextToolView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BA120DA4D9700D44E31 /* IETextToolView.m */; };
+		769A7BAA20DB4D3E00D44E31 /* IEElementView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BA920DB4D3E00D44E31 /* IEElementView.m */; };
+		769A7BAD20DB5E5C00D44E31 /* IETextElementView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BAC20DB5E5C00D44E31 /* IETextElementView.m */; };
+		769A7BB020DB5E6C00D44E31 /* IEImageElementView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BAF20DB5E6C00D44E31 /* IEImageElementView.m */; };
 		76A7BCF620D8F98F00F6DBDF /* world_cup.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */; };
 		76A7BCF820D8FDFB00F6DBDF /* world_cup_right.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */; };
 		76A7BCFE20D91B9C00F6DBDF /* AVImageEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */; };
@@ -90,6 +93,12 @@
 		769A7B9E20DA4D7800D44E31 /* IETextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IETextView.m; sourceTree = "<group>"; };
 		769A7BA120DA4D9700D44E31 /* IETextToolView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IETextToolView.m; sourceTree = "<group>"; };
 		769A7BA420DA523D00D44E31 /* IETextToolView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IETextToolView.h; sourceTree = "<group>"; };
+		769A7BA820DB4D3E00D44E31 /* IEElementView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEElementView.h; sourceTree = "<group>"; };
+		769A7BA920DB4D3E00D44E31 /* IEElementView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEElementView.m; sourceTree = "<group>"; };
+		769A7BAB20DB5E5C00D44E31 /* IETextElementView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IETextElementView.h; sourceTree = "<group>"; };
+		769A7BAC20DB5E5C00D44E31 /* IETextElementView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IETextElementView.m; sourceTree = "<group>"; };
+		769A7BAE20DB5E6C00D44E31 /* IEImageElementView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEImageElementView.h; sourceTree = "<group>"; };
+		769A7BAF20DB5E6C00D44E31 /* IEImageElementView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEImageElementView.m; sourceTree = "<group>"; };
 		76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = world_cup.jpg; sourceTree = "<group>"; };
 		76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = world_cup_right.jpg; sourceTree = "<group>"; };
 		76A7BCFA20D91B9B00F6DBDF /* ImageEditer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageEditer.h; sourceTree = "<group>"; };
@@ -229,6 +238,12 @@
 				769A7B9E20DA4D7800D44E31 /* IETextView.m */,
 				769A7BA420DA523D00D44E31 /* IETextToolView.h */,
 				769A7BA120DA4D9700D44E31 /* IETextToolView.m */,
+				769A7BA820DB4D3E00D44E31 /* IEElementView.h */,
+				769A7BA920DB4D3E00D44E31 /* IEElementView.m */,
+				769A7BAB20DB5E5C00D44E31 /* IETextElementView.h */,
+				769A7BAC20DB5E5C00D44E31 /* IETextElementView.m */,
+				769A7BAE20DB5E6C00D44E31 /* IEImageElementView.h */,
+				769A7BAF20DB5E6C00D44E31 /* IEImageElementView.m */,
 			);
 			path = ImageEdit;
 			sourceTree = "<group>";
@@ -378,10 +393,12 @@
 			files = (
 				08580C7720ABB35B0024A294 /* ViewController.m in Sources */,
 				769A7B9F20DA4D7800D44E31 /* IETextView.m in Sources */,
+				769A7BAA20DB4D3E00D44E31 /* IEElementView.m in Sources */,
 				76A7BCFE20D91B9C00F6DBDF /* AVImageEditViewController.m in Sources */,
 				76BCDA8F20CEADCB006B2AF1 /* UIScreen+easy.m in Sources */,
 				769A7B9920DA3F1D00D44E31 /* IEMosaicToolbar.m in Sources */,
 				08580CA920AC76630024A294 /* AVCameraViewController.m in Sources */,
+				769A7BAD20DB5E5C00D44E31 /* IETextElementView.m in Sources */,
 				769A7B9C20DA46B600D44E31 /* IEEmojiView.m in Sources */,
 				76A7BCFF20D91B9C00F6DBDF /* ImageEditer.m in Sources */,
 				769A7B9620DA37D800D44E31 /* IEMosaicTool.m in Sources */,
@@ -397,6 +414,7 @@
 				76A7BD0520D9298C00F6DBDF /* IEScrawlView.m in Sources */,
 				769A7B9320DA348C00D44E31 /* IEMosaicView.m in Sources */,
 				76BCDA9520CEADFA006B2AF1 /* UIColor+easy.m in Sources */,
+				769A7BB020DB5E6C00D44E31 /* IEImageElementView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -171,8 +171,9 @@ NSString * const kCrop = @"crop"; // 裁剪
 #import "IEMosaicTool.h"
 #import "IEMosaicToolbar.h"
 #import "IETextToolView.h"
+#import "IETextElementView.h"
 
-@interface ImageEditer()<UIScrollViewDelegate>
+@interface ImageEditer()<UIScrollViewDelegate, IEElementViewDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIImageView *imageView;
@@ -190,6 +191,8 @@ NSString * const kCrop = @"crop"; // 裁剪
 
 // 文本
 @property (nonatomic, strong) IETextToolView *textToolView;
+// 文本数组
+@property (nonatomic, strong) NSMutableArray<IETextElementView *> *textElementArr;
 
 @end
 
@@ -249,6 +252,8 @@ NSString * const kCrop = @"crop"; // 裁剪
         };
         
         [self setupToolViews];
+        
+        _textElementArr = [NSMutableArray new];
     }
     
     return self;
@@ -372,13 +377,32 @@ NSString * const kCrop = @"crop"; // 裁剪
 
 #pragma mark - textToolView
 - (void)textToolViewDidDoneText:(NSString *)text {
-    
+    IETextElementView *textElementView = [[IETextElementView alloc] init];
+    textElementView.delegete = self;
+    textElementView.text = text;
+    textElementView.textColor = _textToolView.textView.textColor;
+    [_imageView addSubview:textElementView];
+    textElementView.center = [_imageView convertPoint:self.center fromView:self];
 }
 
 #pragma mark - UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return _imageView;
+}
+
+#pragma mark - IEElementViewDelegate
+
+- (void)elementViewBeginMove:(IEElementView *)elementView {
+    
+}
+
+- (void)elementViewMoveing:(IEElementView *)elementView {
+    NSLog(@"center = %@", NSStringFromCGPoint(elementView.center));
+}
+
+- (void)elementViewEndMove:(IEElementView *)elementView {
+    
 }
 
 
