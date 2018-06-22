@@ -172,6 +172,7 @@ NSString * const kCrop = @"crop"; // 裁剪
 #import "IEMosaicToolbar.h"
 #import "IETextToolView.h"
 #import "IETextElementView.h"
+#import "IECorpMaskView.h"
 
 @interface ImageEditer()<UIScrollViewDelegate, IEElementViewDelegate>
 
@@ -351,6 +352,11 @@ NSString * const kCrop = @"crop"; // 裁剪
         self.mosaicToolbar.hidden = NO;
     } else if ([item.identifier isEqualToString:kText]) {
         [self showTextToolView];
+    } else if ([item.identifier isEqualToString:kCrop]) {
+        self.scrollView.scrollEnabled = YES;
+        IECorpMaskView *maskView = [[IECorpMaskView alloc] initWithFrame:self.bounds];
+        maskView.corpRect = CGRectMake(0.25, 0.25, 0.5, 0.5);
+        [self addSubview:maskView];
     }
 }
 
@@ -403,6 +409,17 @@ NSString * const kCrop = @"crop"; // 裁剪
 
 - (void)elementViewEndMove:(IEElementView *)elementView {
     
+}
+
+
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *view = [super hitTest:point withEvent:event];
+    if (view) {
+        return view;
+    } else {
+        return self.scrollView;
+    }
 }
 
 

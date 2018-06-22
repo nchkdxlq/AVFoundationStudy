@@ -27,6 +27,7 @@
 		769A7BAA20DB4D3E00D44E31 /* IEElementView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BA920DB4D3E00D44E31 /* IEElementView.m */; };
 		769A7BAD20DB5E5C00D44E31 /* IETextElementView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BAC20DB5E5C00D44E31 /* IETextElementView.m */; };
 		769A7BB020DB5E6C00D44E31 /* IEImageElementView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BAF20DB5E6C00D44E31 /* IEImageElementView.m */; };
+		769A7BB320DB9AD400D44E31 /* IECorpMaskView.m in Sources */ = {isa = PBXBuildFile; fileRef = 769A7BB220DB9AD400D44E31 /* IECorpMaskView.m */; };
 		76A7BCF620D8F98F00F6DBDF /* world_cup.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */; };
 		76A7BCF820D8FDFB00F6DBDF /* world_cup_right.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */; };
 		76A7BCFE20D91B9C00F6DBDF /* AVImageEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */; };
@@ -99,6 +100,8 @@
 		769A7BAC20DB5E5C00D44E31 /* IETextElementView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IETextElementView.m; sourceTree = "<group>"; };
 		769A7BAE20DB5E6C00D44E31 /* IEImageElementView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IEImageElementView.h; sourceTree = "<group>"; };
 		769A7BAF20DB5E6C00D44E31 /* IEImageElementView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IEImageElementView.m; sourceTree = "<group>"; };
+		769A7BB120DB9AD400D44E31 /* IECorpMaskView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IECorpMaskView.h; sourceTree = "<group>"; };
+		769A7BB220DB9AD400D44E31 /* IECorpMaskView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IECorpMaskView.m; sourceTree = "<group>"; };
 		76A7BCF520D8F98F00F6DBDF /* world_cup.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = world_cup.jpg; sourceTree = "<group>"; };
 		76A7BCF720D8FDFB00F6DBDF /* world_cup_right.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = world_cup_right.jpg; sourceTree = "<group>"; };
 		76A7BCFA20D91B9B00F6DBDF /* ImageEditer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageEditer.h; sourceTree = "<group>"; };
@@ -220,8 +223,8 @@
 			children = (
 				76A7BCFA20D91B9B00F6DBDF /* ImageEditer.h */,
 				76A7BCFC20D91B9B00F6DBDF /* ImageEditer.m */,
-				76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */,
 				76A7BCFD20D91B9B00F6DBDF /* AVImageEditViewController.h */,
+				76A7BCFB20D91B9B00F6DBDF /* AVImageEditViewController.m */,
 				76A7BD0020D91D3700F6DBDF /* IESelectColorView.h */,
 				76A7BD0120D91D3700F6DBDF /* IESelectColorView.m */,
 				76A7BD0320D9298C00F6DBDF /* IEScrawlView.h */,
@@ -244,6 +247,8 @@
 				769A7BAC20DB5E5C00D44E31 /* IETextElementView.m */,
 				769A7BAE20DB5E6C00D44E31 /* IEImageElementView.h */,
 				769A7BAF20DB5E6C00D44E31 /* IEImageElementView.m */,
+				769A7BB120DB9AD400D44E31 /* IECorpMaskView.h */,
+				769A7BB220DB9AD400D44E31 /* IECorpMaskView.m */,
 			);
 			path = ImageEdit;
 			sourceTree = "<group>";
@@ -413,6 +418,7 @@
 				08580C7420ABB35B0024A294 /* AppDelegate.m in Sources */,
 				76A7BD0520D9298C00F6DBDF /* IEScrawlView.m in Sources */,
 				769A7B9320DA348C00D44E31 /* IEMosaicView.m in Sources */,
+				769A7BB320DB9AD400D44E31 /* IECorpMaskView.m in Sources */,
 				76BCDA9520CEADFA006B2AF1 /* UIColor+easy.m in Sources */,
 				769A7BB020DB5E6C00D44E31 /* IEImageElementView.m in Sources */,
 			);

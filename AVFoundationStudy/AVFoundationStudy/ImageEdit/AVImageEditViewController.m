@@ -9,6 +9,7 @@
 #import "AVImageEditViewController.h"
 #import "ImageEditer.h"
 
+
 @interface AVImageEditViewController ()
 
 @property (nonatomic, strong) ImageEditer *editer;
@@ -22,9 +23,9 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     UIImage *image = [UIImage imageNamed:@"world_cup_right.jpg"];
-    
+
     _editer = [ImageEditer imageEditerWithImage:image];
-    
+
     [_editer show];
 }
 
